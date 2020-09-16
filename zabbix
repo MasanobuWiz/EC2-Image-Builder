@@ -1,0 +1,45 @@
+name: Zabbix
+description: Zabbix
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: update
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sudo yum update -y
+            - sudo yum install git-all
+            - sudo curl -fsSL https://get.docker.com -o get-docker.sh
+            - sudo sh ./get-docker.sh
+            - sudo systemctl enable dockern
+            - sudo systemctl start docker
+            - sudo yum -y install docker-compose
+            
+  - name: github
+    steps:
+      - name: githubclone
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sudo git clone https://github.com/zabbix/zabbix-docker.git
+            - cd zabbix-docker
+            
+  - name: setting
+    steps:
+      - name: setting
+        action: ExecuteBash
+        inputs:
+          commands:
+            - cp docker-compose_v3_centos_mysql_latest.yaml docker-compose.yaml
+            - docker-compose pull
+            
+  - name: run
+    steps:
+      - name: run
+        action: ExecuteBash
+        inputs:
+          commands:
+            - docker-compose up -d
+            
